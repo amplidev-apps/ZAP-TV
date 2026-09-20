@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">ZAP-TV</string>
+    <string name="setup_title">Configuração Inicial</string>
+    <string name="setup_state_title">Onde você mora?</string>
+    <string name="setup_state_subtitle">Selecione seu estado para carregar a programação local (Globo, Record, Band…)</string>
+    <string name="setup_state_national">Não sei / Apenas canais nacionais</string>
+    <string name="setup_pin_title">Senha para canais adultos</string>
+    <string name="setup_pin_subtitle">Configure 4 dígitos para bloquear canais +18</string>
+    <string name="setup_pin_hint">••••</string>
+    <string name="setup_pin_confirm">Confirme o PIN</string>
+    <string name="setup_pin_skip">Pular (sem bloqueio)</string>
+    <string name="setup_pin_error_mismatch">PINs não conferem</string>
+    <string name="setup_pin_error_weak">PIN muito fraco (1234, 0000)</string>
+    <string name="setup_continue">Continuar</string>
+    <string name="splash_loading">Sintonizando…</string>
+    <string name="channel_unavailable">Canal indisponível</string>
+    <string name="channel_buffering">Carregando…</string>
+    <string name="parental_title">Canal restrito</string>
+    <string name="parental_subtitle">Digite o PIN para assistir</string>
+    <string name="parental_wrong">PIN incorreto</string>
+    <string name="parental_locked">Bloqueado por 5 min</string>
+    <string name="parental_cancel">Cancelar</string>
+    <string name="favorite_added">Adicionado aos favoritos ★</string>
+    <string name="favorite_removed">Removido dos favoritos</string>
+    <string name="quick_settings">Ajustes rápidos</string>
+    <string name="quality_auto">Automático</string>
+    <string name="error_network">Sem conexão. Verifique a internet.</string>
+    <string name="error_retry">Tentar novamente</string>
+    <string name="live_now">AO VIVO</string>
+    <string name="next_program">A seguir</string>
+</resources>
