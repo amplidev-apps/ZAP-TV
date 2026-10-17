@@ -27,6 +27,8 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.zap.tv.presentation.overlay.*
 import com.zap.tv.ui.theme.*
+import com.zap.tv.util.PlaybackMechanism
+import com.zap.tv.util.PlaybackState
 import com.zap.tv.util.RemoteAction
 import com.zap.tv.util.RemoteKeyHandler
 
@@ -100,6 +102,9 @@ fun PlayerScreen() {
 
         LaunchedEffect(exoManager) {
             exoManager?.onReconnecting = { viewModel.setReconnecting(it) }
+            exoManager?.onStateChanged = { viewModel.onPlaybackState(it) }
+            // Etapa 15 §03/§04: falha de vídeo confirmada -> tentar outra fonte autorizada.
+            exoManager?.onVideoUnavailable = { viewModel.onVideoUnavailable() }
         }
 
         // Conecta o player ao PlayerView assim que o ExoPlayerManager estiver pronto
@@ -109,11 +114,17 @@ fun PlayerScreen() {
             pv.player = mgr.build()
         }
 
-        // Carrega streams quando o exoManager estiver disponível e houver streams para tocar
-        LaunchedEffect(exoManager, ui.allStreams) {
+        // Carrega streams quando o canal muda. Ao trocar para um canal sem fonte
+        // reproduzível, limpa o player para que o frame anterior não permaneça (Etapa 07 §06).
+        // Etapa 09: somente o mecanismo DIRECT_STREAM usa o ExoPlayer; nos demais a
+        // mídia anterior é encerrada (fallback para WebView ou indisponível).
+        LaunchedEffect(exoManager, ui.current?.number, ui.mechanism, ui.allStreams) {
             val mgr = exoManager ?: return@LaunchedEffect
             val streams = ui.allStreams
-            if (streams.isEmpty()) return@LaunchedEffect
+            if (ui.mechanism != PlaybackMechanism.DIRECT_STREAM || streams.isEmpty()) {
+                mgr.clear()
+                return@LaunchedEffect
+            }
             val firstStream = streams[0]
             mgr.playMulti(
                 streams = streams,
@@ -261,7 +272,7 @@ fun PlayerScreen() {
                         useController = false
                         // Player NÃO é definido aqui — neste momento exoManager ainda é null.
                         // A conexão é feita via LaunchedEffect(exoManager, playerViewRef) acima.
-                        setKeepContentOnPlayerReset(true)
+                        setKeepContentOnPlayerReset(false)
                         resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
                         setOnTouchListener(null)
                         playerViewRef = this
@@ -283,6 +294,18 @@ fun PlayerScreen() {
                 modifier = Modifier.fillMaxSize()
             )
 
+            // Player web universal (Etapa 09 §04/§05): reutilizável, ativo apenas no
+            // mecanismo WEB_EMBED. Recebe dinamicamente o embed_url do canal atual.
+            if (ui.mechanism == PlaybackMechanism.WEB_EMBED && ui.webUrl != null) {
+                WebPlayer(
+                    url = ui.webUrl!!,
+                    onLoadingChanged = { viewModel.setWebLoading(it) },
+                    onError = { viewModel.onWebError() },
+                    onFullscreenChanged = { },
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
             // Tuning / Loading Overlay
             if (ui.isLoading) {
                 Box(
@@ -302,6 +325,59 @@ fun PlayerScreen() {
                             fontFamily = MontserratFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 17.sp
+                        )
+                    }
+                }
+            }
+
+            // Sem sinal — estado explícito, não modal (não exige ação do usuário)
+            if (ui.noSignal && !ui.isLoading) {
+                Box(
+                    Modifier.fillMaxSize().background(Color(0xE6000000)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "SEM SINAL",
+                            color = ZapLiveRed,
+                            fontFamily = MontserratFontFamily,
+                            fontWeight = FontWeight.Black,
+                            fontSize = 34.sp
+                        )
+                        Spacer(Modifier.height(10.dp))
+                        Text(
+                            text = "${ui.current?.number ?: ""} • ${ui.current?.channelName ?: ""}",
+                            color = ZapTextSecondary,
+                            fontFamily = MontserratFontFamily,
+                            fontSize = 16.sp
+                        )
+                    }
+                }
+            }
+
+            // Áudio sem imagem (Etapa 10 §06): há sinal, mas nenhuma trilha de vídeo
+            // foi selecionada/renderizada — informa sem tratar como "sem sinal".
+            if (ui.mechanism == PlaybackMechanism.DIRECT_STREAM &&
+                ui.playbackState == PlaybackState.AUDIO_ONLY && !ui.noSignal
+            ) {
+                Box(
+                    Modifier.fillMaxSize().background(Color(0xB3000000)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "SEM IMAGEM",
+                            color = ZapTextPrimary,
+                            fontFamily = MontserratFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 24.sp
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = "Reproduzindo apenas o áudio",
+                            color = ZapTextSecondary,
+                            fontFamily = MontserratFontFamily,
+                            fontSize = 15.sp
                         )
                     }
                 }
@@ -355,6 +431,9 @@ fun PlayerScreen() {
                     isFavorite = ui.isFavorite,
                     deviceMode = ui.deviceMode,
                     isReconnecting = ui.isReconnecting,
+                    epg = ui.epg,
+                    sourceLabel = ui.sourceLabel,
+                    sourceRegion = ui.sourceRegion,
                     modifier = Modifier.align(Alignment.BottomCenter)
                 )
             }

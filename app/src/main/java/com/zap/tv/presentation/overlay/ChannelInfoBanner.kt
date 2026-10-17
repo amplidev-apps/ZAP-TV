@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.zap.tv.R
 import com.zap.tv.data.local.entity.ChannelNumberEntity
+import com.zap.tv.data.reidoscanais.ChannelEpg
 import com.zap.tv.ui.theme.*
 import com.zap.tv.util.CategoryTranslator
 import com.zap.tv.util.CountryTranslator
@@ -42,6 +43,9 @@ fun ChannelInfoBanner(
     isFavorite: Boolean,
     deviceMode: String,
     isReconnecting: Boolean = false,
+    epg: ChannelEpg? = null,
+    sourceLabel: String? = null,
+    sourceRegion: String? = null,
     modifier: Modifier = Modifier
 ) {
     AnimatedVisibility(
@@ -203,6 +207,24 @@ fun ChannelInfoBanner(
                                 maxLines = 1
                             )
                         }
+
+                        // FONTE REAL em reprodução (Etapa 11 §04): informa a transmissão
+                        // escolhida quando difere da região esperada (fallback).
+                        val sourceLine = sourceLabel?.takeIf { it.isNotBlank() }?.let { label ->
+                            val region = sourceRegion?.takeIf { it.isNotBlank() && it != "NACIONAL" }
+                            if (region != null) "FONTE: $label • $region" else "FONTE: $label"
+                        }
+                        if (sourceLine != null) {
+                            Text(
+                                text = sourceLine,
+                                color = ZapGold,
+                                fontFamily = MontserratFontFamily,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 12.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
                     }
 
                     // Quality Badges
@@ -260,6 +282,11 @@ fun ChannelInfoBanner(
                         .background(Color(0xFF16161E))
                         .padding(horizontal = 14.dp, vertical = 10.dp)
                 ) {
+                    val nowPlayingTitle = epg?.current?.title ?: "Transmissão Digital Ao Vivo"
+                    val nextProgramText = epg?.next?.title?.let { "A seguir: $it" }
+                        ?: "A seguir: Programação Geral"
+                    val progress = epg?.progressFraction() ?: 0.55f
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -274,19 +301,25 @@ fun ChannelInfoBanner(
                                 fontSize = 13.sp
                             )
                             Text(
-                                text = "Transmissão Digital Ao Vivo",
+                                text = nowPlayingTitle,
                                 color = ZapTextPrimary,
                                 fontFamily = MontserratFontFamily,
                                 fontWeight = FontWeight.SemiBold,
-                                fontSize = 13.sp
+                                fontSize = 13.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.widthIn(max = 260.dp)
                             )
                         }
                         Text(
-                            text = "A seguir: Programação Geral",
+                            text = nextProgramText,
                             color = ZapTextMuted,
                             fontFamily = MontserratFontFamily,
                             fontWeight = FontWeight.Medium,
-                            fontSize = 12.sp
+                            fontSize = 12.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.widthIn(max = 200.dp)
                         )
                     }
 
@@ -302,7 +335,7 @@ fun ChannelInfoBanner(
                     ) {
                         Box(
                             modifier = Modifier
-                                .fillMaxWidth(0.55f)
+                                .fillMaxWidth(progress)
                                 .fillMaxHeight()
                                 .background(ZapGold)
                         )

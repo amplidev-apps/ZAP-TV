@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+      Etapa 16 §05 — PROVA DE CONCEITO ISOLADA (somente build DEBUG).
+      Este activity NÃO faz parte do player principal e é removido do build Release.
+      Permite coletar evidências de WebView/MSE/fullscreen na TV física via ADB.
+    -->
+    <application>
+        <activity
+            android:name=".diagnostics.WebViewProbeActivity"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:label="ZAP-TV WebView Probe"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.ZAPTV"
+            tools:ignore="ExportedActivity" />
+    </application>
+</manifest>

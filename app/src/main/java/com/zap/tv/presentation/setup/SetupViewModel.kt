@@ -88,7 +88,7 @@ class SetupViewModel(application: Application) : AndroidViewModel(application) {
         return _prefs.getString("user_name", "") ?: ""
     }
 
-    data class VerifyProgress(val currentName: String, val checked: Int, val total: Int, val alive: Int)
+    data class VerifyProgress(val currentName: String, val checked: Int, val total: Int, val alive: Int, val added: Int)
 
     private val _verifying = MutableStateFlow(false)
     val verifying: StateFlow<Boolean> = _verifying
@@ -99,10 +99,10 @@ class SetupViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _loading.value = true
             _verifying.value = true
-            _verifyProgress.value = VerifyProgress("Iniciando sintonia...", 0, 1, 0)
+            _verifyProgress.value = VerifyProgress("Iniciando sintonia...", 0, 1, 0, 0)
             try {
-                repo.completeSetupWithVerification(_uf.value, null) { name, checked, total, alive ->
-                    _verifyProgress.value = VerifyProgress(name, checked, total, alive)
+                repo.completeSetupWithVerification(_uf.value, null) { name, checked, total, alive, added ->
+                    _verifyProgress.value = VerifyProgress(name, checked, total, alive, added)
                 }
                 onDone()
             } catch (e: Exception) {
@@ -124,10 +124,10 @@ class SetupViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _loading.value = true
             _verifying.value = true
-            _verifyProgress.value = VerifyProgress("Iniciando sintonia...", 0, 1, 0)
+            _verifyProgress.value = VerifyProgress("Iniciando sintonia...", 0, 1, 0, 0)
             try {
-                repo.completeSetupWithVerification(_uf.value, p) { name, checked, total, alive ->
-                    _verifyProgress.value = VerifyProgress(name, checked, total, alive)
+                repo.completeSetupWithVerification(_uf.value, p) { name, checked, total, alive, added ->
+                    _verifyProgress.value = VerifyProgress(name, checked, total, alive, added)
                 }
                 onDone()
             } catch (e: Exception) {

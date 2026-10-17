@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>ZAP-TV WebView Probe</title>
+    <!-- hls.js (MSE) — mesmo mecanismo usado pelos players incorporados da Fonte A -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
+    <style>
+        html, body { margin: 0; padding: 0; background: #000; color: #eee;
+            font-family: sans-serif; height: 100%; overflow: hidden; }
+        #wrap { position: absolute; inset: 0; display: flex; flex-direction: column; }
+        #v { flex: 1 1 auto; width: 100%; background: #000; min-height: 0; }
+        #bar { flex: 0 0 auto; display: flex; gap: 8px; padding: 8px; background: #15151c; }
+        button { background: #d4af37; color: #000; border: 0; border-radius: 6px;
+            padding: 10px 18px; font-size: 16px; font-weight: bold; }
+        button:focus { outline: 3px solid #fff; }
+        #log { flex: 0 0 auto; height: 30%; margin: 0; padding: 6px; overflow: auto;
+            background: #0b0b10; color: #9fe; font-size: 11px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+<div id="wrap">
+    <video id="v" controls playsinline></video>
+    <div id="bar">
+        <button id="start" autofocus>INICIAR</button>
+        <button id="fs">TELA CHEIA</button>
+    </div>
+    <pre id="log"></pre>
+</div>
+<script>
+    // Transmissão de TESTE pública e autorizada (Big Buck Bunny / Mux test streams).
+    // NÃO é um canal real do catálogo — serve só para validar o motor web do ZAP-TV.
+    var TEST_SRC = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
+
+    var LINES = [];
+    function report(type, data) {
+        var msg = JSON.stringify({ t: type, d: data });
+        LINES.push(msg);
+        document.getElementById('log').textContent = LINES.join('\n');
+        try { if (window.ProbeBridge) ProbeBridge.onEvent(msg); } catch (e) {}
+    }
+
+    function capabilities() {
+        var v = document.createElement('video');
+        var ms = ('MediaSource' in window);
+        var mse = false;
+        try { mse = ms && MediaSource.isTypeSupported('video/mp4; codecs="avc1.42E01E,mp4a.40.2"'); } catch (e) {}
+        var hevc = false;
+        try { hevc = ms && MediaSource.isTypeSupported('video/mp4; codecs="hvc1.1.6.L93.B0"'); } catch (e) {}
+        return {
+            ua: navigator.userAgent,
+            mediaSource: ms,
+            mse_avc1: mse,
+            mse_hevc: hevc,
+            nativeHls: !!(v.canPlayType && v.canPlayType('application/vnd.apple.mpegurl')),
+            hlsJs: !!(window.Hls && window.Hls.isSupported && window.Hls.isSupported()),
+            cores: navigator.hardwareConcurrency || 0
+        };
+    }
+
+    var video = document.getElementById('v');
+
+    ['loadstart','loadedmetadata','loadeddata','canplay','playing','waiting','stalled','suspend','pause','ended','error']
+        .forEach(function (ev) {
+            video.addEventListener(ev, function () {
+                report('video:' + ev, {
+                    w: video.videoWidth, h: video.videoHeight,
+                    t: +video.currentTime.toFixed(2),
+                    paused: video.paused, readyState: video.readyState
+                });
+            });
+        });
+
+    report('caps', capabilities());
+
+    var hls = null;
+    function start() {
+        report('start', {});
+        if (window.Hls && Hls.isSupported()) {
+            hls = new Hls({ lowLatencyMode: false, enableWorker: true });
+            hls.on(Hls.Events.ERROR, function (e, d) {
+                report('hls:error', { type: d.type, details: d.details, fatal: d.fatal });
+            });
+            hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                report('manifest', {});
+                video.play().catch(function (e) { report('play:error', { m: '' + e }); });
+            });
+            hls.loadSource(TEST_SRC);
+            hls.attachMedia(video);
+        } else if (video.canPlayType && video.canPlayType('application/vnd.apple.mpegurl')) {
+            report('native', {});
+            video.src = TEST_SRC;
+            video.play().catch(function (e) { report('play:error', { m: '' + e }); });
+        } else {
+            report('unsupported', {});
+        }
+    }
+
+    document.getElementById('start').addEventListener('click', start);
+    document.getElementById('fs').addEventListener('click', function () {
+        if (video.requestFullscreen) video.requestFullscreen();
+        else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
+        else report('fs:unsupported', {});
+    });
+
+    // Autoinício para permitir coleta via ADB sem interação.
+    setTimeout(start, 400);
+</script>
+</body>
+</html>

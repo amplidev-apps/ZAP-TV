@@ -7,127 +7,30 @@ import com.zap.tv.data.local.entity.ChannelNumberEntity
 
 object ChannelNumbering {
 
-    // Affiliates mapping UF -> preferred channel ids per network (completo 27 UFs - M3U como primario)
-    val affiliateMap: Map<String, Map<String, String>> = mapOf(
-        "Globo" to mapOf(
-            "AC" to "globo_ac_rede_amaz_nica_rio_branco.br", "AL" to "globo_al_tv_gazeta_de_alagoas_macei.br",
-            "AP" to "globo_ap_rede_amaz_nica_macap.br", "AM" to "globo_am_rede_amaz_nica_manaus.br",
-            "BA" to "globo_ba_tv_bahia.br", "CE" to "globo_ce_tv_verdes_mares.br",
-            "DF" to "globo_df.br", "ES" to "globo_es_tv_gazeta_vit_ria.br",
-            "GO" to "globo_go_tv_anhanguera_goi_nia.br", "MA" to "globo_ma_tv_mirante_s_o_lu_s.br",
-            "MT" to "globo_mt_tv_centro_am_rica.br", "MS" to "globo_ms_tv_morena.br",
-            "MG" to "globo_mg_tv_integra_o_uberl_ndia.br", "PA" to "globo_pa_tv_liberal_bel_m.br",
-            "PB" to "globo_pb_tv_cabo_branco.br", "PR" to "globo_pr_rpc_curitiba.br",
-            "PE" to "globo_pe_globo_recife.br", "PI" to "globo_pi_tv_clube.br",
-            "RJ" to "globo_rj.br", "RN" to "globo_rn_intertv_cabugi.br",
-            "RS" to "globo_rs_rbs_tv_porto_alegre.br", "RO" to "globo_ro_rede_amaz_nica_porto_velho.br",
-            "RR" to "globo_nacional.br", "SC" to "globo_sc_nsc_tv_florian_polis.br",
-            "SP" to "globo_sp.br", "SE" to "globo_se_tv_sergipe.br",
-            "TO" to "globo_to_tv_anhanguera_palmas.br"
-        ),
-        "SBT" to mapOf(
-            "AC" to "sbt_nacional.br", "AL" to "sbt_al_ponta_verde.br",
-            "AP" to "sbt_nacional.br", "AM" to "sbt_nacional.br",
-            "BA" to "sbt_ba.br", "CE" to "sbt_ce_jangadeiro.br",
-            "DF" to "sbt_df_bras_lia.br", "ES" to "sbt_es_tribuna.br",
-            "GO" to "sbt_go.br", "MA" to "sbt_ma.br",
-            "MT" to "sbt_mt_noroeste.br", "MS" to "sbt_nacional.br",
-            "MG" to "sbt_mg_alterosa.br", "PA" to "sbt_pa_belem.br",
-            "PB" to "sbt_pb_tamba.br", "PR" to "sbt_pr.br",
-            "PE" to "sbt_pe_tv_jornal.br", "PI" to "sbt_pi_cidade_verde.br",
-            "RJ" to "sbt_rj.br", "RN" to "sbt_rn.br",
-            "RS" to "sbt_rs.br", "RO" to "sbt_ro_allamanda.br",
-            "RR" to "sbt_nacional.br", "SC" to "sbt_sc.br",
-            "SP" to "sbt_sp.br", "SE" to "sbt_nacional.br",
-            "TO" to "sbt_to.br"
-        ),
-        "Record" to mapOf(
-            "AC" to "record_news.br", "AL" to "record_al_paju_ara.br",
-            "AP" to "record_news.br", "AM" to "record_am_manaus.br",
-            "BA" to "record_ba_itapoan.br", "CE" to "record_ce_cidade.br",
-            "DF" to "record_df_bras_lia.br", "ES" to "record_es_vit_ria.br",
-            "GO" to "record_go_goi_s.br", "MA" to "record_ma_remanso.br",
-            "MT" to "record_mt.br", "MS" to "record_news.br",
-            "MG" to "record_mg_minas.br", "PA" to "record_pa_bel_m.br",
-            "PB" to "record_pb_correio.br", "PR" to "record_pr.br",
-            "PE" to "record_pe_recife_guararapes.br", "PI" to "record_pi_piau.br",
-            "RJ" to "record_rj.br", "RN" to "record_rn_tropical.br",
-            "RS" to "record_rs.br", "RO" to "record_ro_sic.br",
-            "RR" to "record_news.br", "SC" to "record_sc_florian_polis.br",
-            "SP" to "record_sp.br", "SE" to "record_se_atalaia.br",
-            "TO" to "record_to.br"
-        ),
-        "Band" to mapOf(
-            "AC" to "band_nacional.br", "AL" to "band_al.br",
-            "AP" to "band_nacional.br", "AM" to "band_am.br",
-            "BA" to "band_ba.br", "CE" to "band_ce.br",
-            "DF" to "band_df_bras_lia.br", "ES" to "band_es_capixaba.br",
-            "GO" to "band_go.br", "MA" to "band_nacional.br",
-            "MT" to "band_nacional.br", "MS" to "band_nacional.br",
-            "MG" to "band_mg.br", "PA" to "band_pa.br",
-            "PB" to "band_pb_arapuan.br", "PR" to "band_pr.br",
-            "PE" to "band_pe_recife.br", "PI" to "band_nacional.br",
-            "RJ" to "band_rj.br", "RN" to "band_rn.br",
-            "RS" to "band_rs.br", "RO" to "band_nacional.br",
-            "RR" to "band_nacional.br", "SC" to "band_sc_barriga_verde.br",
-            "SP" to "band_sp.br", "SE" to "band_nacional.br",
-            "TO" to "band_to.br"
-        ),
-        "Gazeta" to mapOf(
-            "AC" to "tv_gazeta.br", "AL" to "tv_gazeta.br", "AP" to "tv_gazeta.br", "AM" to "tv_gazeta.br",
-            "BA" to "tv_gazeta.br", "CE" to "tv_gazeta.br", "DF" to "tv_gazeta.br", "ES" to "tv_gazeta.br",
-            "GO" to "tv_gazeta.br", "MA" to "tv_gazeta.br", "MT" to "tv_gazeta.br", "MS" to "tv_gazeta.br",
-            "MG" to "tv_gazeta.br", "PA" to "tv_gazeta.br", "PB" to "tv_gazeta.br", "PR" to "tv_gazeta.br",
-            "PE" to "tv_gazeta.br", "PI" to "tv_gazeta.br", "RJ" to "tv_gazeta.br", "RN" to "tv_gazeta.br",
-            "RS" to "tv_gazeta.br", "RO" to "tv_gazeta.br", "RR" to "tv_gazeta.br", "SC" to "tv_gazeta.br",
-            "SP" to "tv_gazeta.br", "SE" to "tv_gazeta.br", "TO" to "tv_gazeta.br"
-        )
-    )
-
-    // Reverse map: channelId -> UF
-    private val reverseAffiliateMap: Map<String, String> by lazy {
-        val map = mutableMapOf<String, String>()
-        affiliateMap.values.forEach { stateMap ->
-            stateMap.forEach { (state, id) ->
-                // Mapeia apenas filiais regionais reais, ignora canais que são nacionais (ex: globo_nacional.br)
-                if (!id.contains("nacional", ignoreCase = true) && !id.contains("news", ignoreCase = true) && !id.contains("tv_gazeta", ignoreCase = true)) {
-                    map[id] = state
-                }
+    // Affiliates mapping UF -> preferred channel ids per network.
+    // Construído a partir do AffiliateRegistry (identificadores reais e verificados - Etapa 05).
+    // Não contém IDs fictícios: cada valor existe em m3u_catalog.json ou iptv-org.
+    val affiliateMap: Map<String, Map<String, String>> = run {
+        val ufs = AffiliateRegistry.ALL_UFS
+        AffiliateRegistry.networks().associateWith { network ->
+            val regionalEntries = ufs.mapNotNull { uf ->
+                AffiliateRegistry.resolveRegionalId(network, uf)?.let { uf to it }
+            }.toMap()
+            if (regionalEntries.isNotEmpty()) {
+                regionalEntries
+            } else {
+                // Redes sem afiliação regional (ex.: Gazeta) operam pela cabeça de rede.
+                AffiliateRegistry.headId(network)?.let { head -> ufs.associateWith { head } } ?: emptyMap()
             }
         }
-        map
     }
 
-    // Mapa de fallback para quando um estado não tem filial de uma emissora
-    private val stateFallbacks = mapOf(
-        "AC" to listOf("RO", "AM", "DF", "SP", "RJ"),
-        "AL" to listOf("PE", "SE", "PB", "RN", "BA", "SP", "RJ"),
-        "AP" to listOf("PA", "MA", "AM", "DF", "SP", "RJ"),
-        "AM" to listOf("RR", "RO", "AC", "PA", "DF", "SP", "RJ"),
-        "BA" to listOf("SE", "AL", "PE", "MG", "ES", "SP", "RJ"),
-        "CE" to listOf("PI", "RN", "PB", "PE", "SP", "RJ"),
-        "DF" to listOf("GO", "MG", "SP", "RJ"),
-        "ES" to listOf("RJ", "MG", "BA", "SP"),
-        "GO" to listOf("DF", "MG", "MS", "MT", "SP", "RJ"),
-        "MA" to listOf("PI", "CE", "PA", "TO", "SP", "RJ"),
-        "MT" to listOf("MS", "GO", "RO", "DF", "SP", "RJ"),
-        "MS" to listOf("MT", "GO", "PR", "SP", "RJ"),
-        "MG" to listOf("ES", "RJ", "SP", "GO", "DF"),
-        "PA" to listOf("AP", "MA", "AM", "TO", "DF", "SP", "RJ"),
-        "PB" to listOf("RN", "PE", "CE", "AL", "SP", "RJ"),
-        "PR" to listOf("SC", "SP", "MS", "RS", "RJ"),
-        "PE" to listOf("PB", "AL", "RN", "CE", "SP", "RJ"),
-        "PI" to listOf("MA", "CE", "PE", "BA", "SP", "RJ"),
-        "RJ" to listOf("ES", "MG", "SP", "DF"),
-        "RN" to listOf("PB", "CE", "PE", "SP", "RJ"),
-        "RS" to listOf("SC", "PR", "SP", "RJ"),
-        "RO" to listOf("AC", "AM", "MT", "DF", "SP", "RJ"),
-        "RR" to listOf("AM", "PA", "DF", "SP", "RJ"),
-        "SC" to listOf("PR", "RS", "SP", "RJ"),
-        "SP" to listOf("RJ", "MG", "PR", "DF"),
-        "SE" to listOf("AL", "BA", "PE", "SP", "RJ"),
-        "TO" to listOf("GO", "PA", "MA", "PI", "BA", "DF", "SP", "RJ")
-    )
+    // Reverse map: channelId real de afiliada regional -> UF (cabeças nacionais não entram).
+    private val reverseAffiliateMap: Map<String, String> by lazy {
+        AffiliateRegistry.all
+            .filter { !it.isHead }
+            .associate { it.channelId.lowercase() to it.uf }
+    }
 
     // Fixed top 9 channels configuration
     // Each config: position, displayName, exactId (preferred), exactName (fallback), keywords (last resort)
@@ -136,7 +39,7 @@ object ChannelNumbering {
         FixedChannel(2, "SBT", "SBTNacional.br", "SBT", setOf("sbt nacional", "sbtv")),
         FixedChannel(3, "Record", "Record.br", "Record", setOf("recordtv", "record tv")),
         FixedChannel(4, "RedeTV!", "RedeTV.br", "RedeTV!", setOf("redetv", "rede tv")),
-        FixedChannel(5, "Gazeta", "tv_gazeta.br", "Gazeta", setOf("tvgazeta", "tv gazeta")),
+        FixedChannel(5, "Gazeta", "TVGazeta.br", "Gazeta", setOf("tvgazeta", "tv gazeta")),
         FixedChannel(6, "Band", "Band.br", "Band", setOf("bandtv", "band tv", "bandnews")),
         FixedChannel(7, "TV Cultura", "TVCultura.br", "TV Cultura", setOf("tvcultura", "tv cultura")),
         FixedChannel(8, "TV Centro Sul", null, "TV Centro Sul", setOf("centro sul", "centrosul")), // custom
@@ -150,6 +53,26 @@ object ChannelNumbering {
         val exactName: String, // exact name match (case-insensitive)
         val keywords: Set<String> // fallback: word-boundary keyword match
     )
+
+    /**
+     * Etapa 17 §04: identificadores que NUNCA podem representar uma posição fixa,
+     * mesmo que casem por nome/palavra-chave. Corrige a TV Cultura (posição 7), que
+     * estava reproduzindo o sinal da Cultura Fast em vez da emissora principal
+     * (`TVCultura.br`). A Cultura Fast continua existindo como canal próprio, apenas
+     * não substitui a TV Cultura na posição fixa.
+     */
+    private val forbiddenFixedIds: Map<String, Set<String>> = mapOf(
+        "TV Cultura" to setOf("culturafast.br")
+    )
+
+    /**
+     * Rede nacional associada a uma posição fixa (1-9), ou `null` quando a posição
+     * não corresponde a uma rede regionalizável. A posição 8 (TV Centro Sul) é
+     * custom e não participa da regionalização por rede.
+     */
+    fun networkForFixedPosition(position: Int): String? =
+        if (position == 8) null
+        else fixedTop9Config.firstOrNull { it.position == position }?.displayName
 
     // Custom stream for TV Centro Sul (position 8)
     private val tvCentroSulStream = ApiStreamDto(
@@ -180,6 +103,16 @@ object ChannelNumbering {
         height = 900
     )
 
+    /**
+     * Complemento Etapa 18: identidades que SEMPRE pertencem ao catálogo aprovado por
+     * representarem as posições fixas 1-9. Garante que nenhuma posição fixa desapareça
+     * da grade por ausência de stream — a disponibilidade afeta somente a reprodução,
+     * nunca a identidade nem o número da posição. (A posição 8 é o canal custom
+     * TV Centro-Sul, incluído explicitamente.)
+     */
+    val fixedApprovedIds: Set<String> =
+        fixedTop9Config.mapNotNull { it.exactId }.toSet() + tvCentroSulChannel.id
+
     private fun categoryWeight(cats: List<String>): Int = when {
         cats.contains("general") -> 1
         cats.contains("news") -> 2
@@ -204,15 +137,33 @@ object ChannelNumbering {
         else -> 9000
     }
 
+    /**
+     * @param catalogOnlyIds identificadores de canais que devem entrar na grade MESMO
+     *   sem fonte reproduzível (registro de catálogo da Fonte A, Etapa 08 §02/§05).
+     *   Eles são numerados normalmente, marcados `isAvailable = false`, e NUNCA
+     *   concorrem às posições fixas 1-9 (reservadas a emissoras reproduzíveis).
+     * @param approvedIds Etapa 18: pertencimento ao catálogo complementar APROVADO
+     *   (ledger de identidades estáveis). Quando informado (não vazio), é o ÚNICO
+     *   critério de existência para canais iptv-org — a presença de stream deixa de
+     *   decidir quem entra na grade. Vazio = comportamento legado (stream/catálogo).
+     */
     fun buildNumberedChannels(
         channels: List<ApiChannelDto>,
         streams: List<ApiStreamDto>,
         logos: List<ApiLogoDto>,
-        selectedUf: String
+        selectedUf: String,
+        catalogOnlyIds: Set<String> = emptySet(),
+        approvedIds: Set<String> = emptySet()
     ): List<ChannelNumberEntity> {
         val streamsByChannel = streams.groupBy { it.channel }.toMutableMap()
         val logoByChannel = logos.groupBy { it.channel }
         fun logoFor(id: String): String? = logoByChannel[id]?.firstOrNull()?.url
+
+        // Etapa 07 §03: canais temáticos de programação contínua 24h nunca entram
+        // no catálogo ativo (notícia/TV ao vivo são preservadas pelo filtro).
+        val activeChannels = channels.filterNot {
+            CatalogFilters.isTematic24h(it.id, it.name, it.categories)
+        }
 
         // Inject custom stream for TV Centro Sul into streams map
         streamsByChannel["tv_centro_sul_br"] = listOf(tvCentroSulStream)
@@ -223,7 +174,7 @@ object ChannelNumbering {
             map[selectedUf]?.let { affiliatePreferredIds.add(it) }
         }
 
-        val sorted = channels.sortedWith(compareBy(
+        val sorted = activeChannels.sortedWith(compareBy(
             { countryWeight(it.country) },
             { categoryWeight(it.categories) },
             { it.name.lowercase() }
@@ -241,88 +192,69 @@ object ChannelNumbering {
         })
 
         val filtered = withAffiliateBoost.filter { ch ->
-            !streamsByChannel[ch.id].isNullOrEmpty()
+            ch.id in approvedIds ||
+                ch.id in catalogOnlyIds ||
+                // Compatibilidade (Etapa 07/08): sem ledger informado, mantém o
+                // comportamento anterior (stream reproduzível ou registro de catálogo).
+                (approvedIds.isEmpty() && !streamsByChannel[ch.id].isNullOrEmpty())
         }
 
-        // --- Build fixed top 9 channels ---
+        // Complemento Etapa 18: as posições fixas 1-9 existem independentemente da
+        // disponibilidade da transmissão. Um canal aprovado pelo ledger pode ocupar a
+        // posição mesmo sem stream (a indisponibilidade afeta só a reprodução). Os
+        // registros catalog-only continuam impedidos de ocupar posições fixas, exceto
+        // quando explicitamente aprovados pelo ledger (identidade de emissora fixa).
+        val fixedPool = filtered.filter { it.id !in catalogOnlyIds || it.id in approvedIds }
+
+        // --- Build fixed top 9 channels (política única - AffiliateRegistry) ---
         val fixedEntities = mutableListOf<ChannelNumberEntity>()
         val fixedChannelIds = mutableSetOf<String>()
 
         for (config in fixedTop9Config) {
             val targetNumber = config.position
-            when {
-                config.exactId == null -> {
-                    // Custom channel: TV Centro Sul (position 8)
-                    if (targetNumber == 8) {
-                        fixedEntities.add(ChannelNumberEntity(
-                            number = targetNumber,
-                            channelId = tvCentroSulChannel.id,
-                            channelName = tvCentroSulChannel.name,
-                            country = tvCentroSulChannel.country,
-                            categories = tvCentroSulChannel.categories.joinToString(","),
-                            logoUrl = tvCentroSulLogo.url,
-                            isNsfw = tvCentroSulChannel.is_nsfw,
-                            streamCount = 1,
-                            affiliateState = null
-                        ))
-                        fixedChannelIds.add(tvCentroSulChannel.id)
-                    }
-                }
-                else -> {
-                    // Obtém o ID da filial regional esperada para este estado, com fallback para estados vizinhos
-                    val networkMap = affiliateMap[config.displayName]
-                    var expectedRegionalId: String? = null
-                    
-                    if (networkMap != null) {
-                        val fallbacks = stateFallbacks[selectedUf] ?: emptyList()
-                        val checkUfs = listOf(selectedUf) + fallbacks
-                        
-                        for (ufToTry in checkUfs) {
-                            val idToTry = networkMap[ufToTry]
-                            if (idToTry != null && filtered.any { it.id == idToTry }) {
-                                expectedRegionalId = idToTry
-                                break
-                            }
-                        }
-                    }
 
-                    // Match priority: 0) expected regional ID, 1) exact ID, 2) exact name (case-insensitive), 3) word-boundary keyword
-                    val match = filtered.find { ch ->
-                        // 0) Regional affiliate ID match (highest priority)
-                        expectedRegionalId != null && ch.id == expectedRegionalId
-                    } ?: filtered.find { ch ->
-                        // 1) Exact ID match (fallback 1)
-                        ch.id == config.exactId
-                    } ?: filtered.find { ch ->
-                        // 2) Exact name match (fallback 2)
-                        ch.name.equals(config.exactName, ignoreCase = true)
-                    } ?: filtered.find { ch ->
-                        // 3) Word-boundary keyword match (last resort)
-                        config.keywords.any { kw ->
-                            val kwLower = kw.lowercase()
-                            ch.id.lowercase().contains(kwLower) || ch.name.lowercase().contains(kwLower)
-                        }
-                    }
-                    
-                    if (match != null) {
-                        val logo = logoFor(match.id)
-                        val count = streamsByChannel[match.id]?.size ?: 0
-                        val isAffiliate = affiliatePreferredIds.contains(match.id)
-                        fixedEntities.add(ChannelNumberEntity(
-                            number = targetNumber,
-                            channelId = match.id,
-                            channelName = config.displayName,
-                            country = match.country,
-                            categories = match.categories.joinToString(","),
-                            logoUrl = logo,
-                            isNsfw = match.is_nsfw,
-                            streamCount = count,
-                            affiliateState = getAffiliateState(match.id, config.displayName)
-                        ))
-                        fixedChannelIds.add(match.id)
-                    }
+            // Regra absoluta: TV Centro-Sul preservada na posição 8.
+            if (config.exactId == null) {
+                if (targetNumber == 8) {
+                    fixedEntities.add(ChannelNumberEntity(
+                        number = targetNumber,
+                        channelId = tvCentroSulChannel.id,
+                        channelName = tvCentroSulChannel.name,
+                        country = tvCentroSulChannel.country,
+                        categories = tvCentroSulChannel.categories.joinToString(","),
+                        logoUrl = tvCentroSulLogo.url,
+                        isNsfw = tvCentroSulChannel.is_nsfw,
+                        streamCount = 1,
+                        affiliateState = null
+                    ))
+                    fixedChannelIds.add(tvCentroSulChannel.id)
                 }
+                continue
             }
+
+            val match = selectFixedEntity(
+                config = config,
+                uf = selectedUf,
+                available = fixedPool,
+                idOf = { it.id },
+                nameOf = { it.name }
+            ) ?: continue
+
+            val logo = logoFor(match.id)
+            val count = streamsByChannel[match.id]?.size ?: 0
+            fixedEntities.add(ChannelNumberEntity(
+                number = targetNumber,
+                channelId = match.id,
+                channelName = config.displayName,
+                country = match.country,
+                categories = match.categories.joinToString(","),
+                logoUrl = logo,
+                isNsfw = match.is_nsfw,
+                streamCount = count,
+                affiliateState = getAffiliateState(match.id, config.displayName),
+                isAvailable = count > 0
+            ))
+            fixedChannelIds.add(match.id)
         }
 
         // Remove fixed channels from filtered to avoid duplicates
@@ -362,7 +294,8 @@ object ChannelNumbering {
                     logoUrl = logo,
                     isNsfw = c.is_nsfw,
                     streamCount = count,
-                    affiliateState = getAffiliateState(c.id, c.name)
+                    affiliateState = getAffiliateState(c.id, c.name),
+                    isAvailable = count > 0
                 ))
                 number++
             }
@@ -388,33 +321,80 @@ object ChannelNumbering {
     }
 
     /**
-     * Attempts to find the Brazilian state (UF) a channel belongs to,
-     * using the reverseAffiliateMap first, and then falling back to name detection.
+     * Identifica a UF de um canal.
+     * 1) Metadado explícito verificado no AffiliateRegistry (channelId real de afiliada regional).
+     * 2) Token de UF exato no identificador (delimitado por separadores — não substring arbitrária).
+     * 3) Sem informação suficiente: região desconhecida (null).
+     *
+     * O parâmetro `channelName` é mantido por compatibilidade de assinatura, mas NÃO é usado
+     * para inferência: a UF não é deduzida de palavras soltas no nome.
      */
     fun getAffiliateState(channelId: String, channelName: String): String? {
-        // 1. Verifica no mapa oficial de filiais do iptv-org
-        reverseAffiliateMap[channelId]?.let { return it }
+        // 1. Associação verificada rede/UF -> channelId real (reverse map do AffiliateRegistry).
+        reverseAffiliateMap[channelId.lowercase()]?.let { return it }
 
-        // 2. Fallback: tenta detectar pela sigla no nome/id
-        val ufs = setOf(
-            "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO",
-            "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI",
-            "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"
-        )
+        // 2. Token de UF explícito no identificador (ex.: globo_sp.br -> SP).
+        val ufs = AffiliateRegistry.ALL_UFS.toHashSet()
+        val idTokens = channelId.uppercase()
+            .split('_', '-', '.', '/', ' ')
+            .filter { it.isNotBlank() }
+        idTokens.firstOrNull { it in ufs }?.let { return it }
 
-        val normId   = channelId.uppercase().replace(Regex("[_\\-./]"), " ")
-        val normName = channelName.uppercase().replace(Regex("[_\\-./]"), " ")
-
-        val idTokens   = normId.split(" ").filter { it.isNotBlank() }
-        val nameTokens = normName.split(" ").filter { it.isNotBlank() }
-
-        return (nameTokens + idTokens).firstOrNull { it in ufs }
+        // 3. Região desconhecida.
+        return null
     }
 
     /**
-     * Resolve os 9 canais fixos diretamente sobre a lista completa e unificada de canais (M3U + iptv-org),
-     * garantindo que a filial regional do estado do usuário (ex: Globo CE, SBT CE, etc.) ocupe
-     * prioritariamente a posição 1, 2, 3, 6.
+     * Política ÚNICA de seleção da emissora de cada posição fixa (determinística).
+     * Ordem: (1) afiliada regional reproduzível da UF; (2) cabeça de rede nacional;
+     * (3) nome exato; (4) palavra-chave. NUNCA seleciona afiliada de outro estado.
+     */
+    private fun <T> selectFixedEntity(
+        config: FixedChannel,
+        uf: String,
+        available: List<T>,
+        idOf: (T) -> String,
+        nameOf: (T) -> String
+    ): T? {
+        // Etapa 17 §04: exclui identificadores proibidos para esta posição fixa.
+        val blocked = forbiddenFixedIds[config.displayName].orEmpty()
+        val pool = if (blocked.isEmpty()) available else available.filter {
+            idOf(it).lowercase() !in blocked
+        }
+
+        val candidateIds = AffiliateRegistry.candidateIds(config.displayName, uf).toMutableList()
+        config.exactId?.let { if (it !in candidateIds) candidateIds += it }
+
+        // 1) afiliada regional da UF; 2) cabeça de rede nacional / ID exato previsto
+        for (id in candidateIds) {
+            pool.firstOrNull { idOf(it).equals(id, ignoreCase = true) }?.let { return it }
+        }
+
+        // Rede de segurança (Risco A): os fallbacks por nome/palavra-chave NUNCA podem
+        // escolher uma afiliada regional de OUTRO estado conhecida pelo registro.
+        fun isForeignAffiliate(ent: T): Boolean {
+            if (uf == "NACIONAL") return false
+            val aff = AffiliateRegistry.affiliateForChannelId(idOf(ent)) ?: return false
+            return !aff.isHead && aff.uf != uf
+        }
+
+        // 3) nome exato (outra fonte nacional já prevista na arquitetura)
+        pool.firstOrNull {
+            !isForeignAffiliate(it) && nameOf(it).equals(config.exactName, ignoreCase = true)
+        }?.let { return it }
+        // 4) palavra-chave (último recurso)
+        return pool.firstOrNull { ent ->
+            !isForeignAffiliate(ent) && config.keywords.any { kw ->
+                val k = kw.lowercase()
+                idOf(ent).lowercase().contains(k) || nameOf(ent).lowercase().contains(k)
+            }
+        }
+    }
+
+    /**
+     * Resolve os 9 canais fixos sobre a lista unificada (M3U + iptv-org), aplicando a
+     * política única: afiliada da UF -> cabeça de rede nacional -> indisponível.
+     * Determinístico para o mesmo catálogo/UF. Nunca usa afiliada de outro estado.
      */
     fun resolveFixedEntities(
         allEntities: List<ChannelNumberEntity>,
@@ -425,10 +405,15 @@ object ChannelNumbering {
 
         for (config in fixedTop9Config) {
             val targetNumber = config.position
+
+            // Preservação absoluta: TV Centro-Sul permanece na posição 8.
+            // Risco B: identificar pela ID exata; o fallback por nome é estrito (igualdade),
+            // para nunca reconhecer um canal diferente cujo nome apenas contenha "Centro Sul".
             if (targetNumber == 8) {
-                val match = allEntities.find { 
-                    it.channelId == tvCentroSulChannel.id || 
-                    it.channelName.contains("Centro Sul", ignoreCase = true) 
+                val match = allEntities.find {
+                    it.channelId.equals(tvCentroSulChannel.id, ignoreCase = true)
+                } ?: allEntities.find {
+                    it.channelName.trim().equals("TV Centro Sul", ignoreCase = true)
                 }
                 if (match != null) {
                     fixedEntities.add(match.copy(number = 8, channelName = "TV Centro Sul"))
@@ -436,61 +421,103 @@ object ChannelNumbering {
                 }
                 continue
             }
-            if (targetNumber == 9) {
-                val match = allEntities.find { 
-                    it.channelId == "tv_litoral_rn.br" || 
-                    it.channelName.contains("Litoral RN", ignoreCase = true) 
-                }
-                if (match != null) {
-                    fixedEntities.add(match.copy(number = 9, channelName = "TV Litoral RN"))
-                    fixedChannelIds.add(match.channelId)
-                }
-                continue
-            }
 
-            val networkMap = affiliateMap[config.displayName]
-            var matchedEntity: ChannelNumberEntity? = null
+            if (config.exactId == null) continue
 
-            if (networkMap != null && selectedUf != "NACIONAL") {
-                val fallbacks = stateFallbacks[selectedUf] ?: emptyList()
-                val checkUfs = listOf(selectedUf) + fallbacks
+            val matched = selectFixedEntity(
+                config = config,
+                uf = selectedUf,
+                available = allEntities,
+                idOf = { it.channelId },
+                nameOf = { it.channelName }
+            ) ?: continue
 
-                for (ufToTry in checkUfs) {
-                    val expectedId = networkMap[ufToTry]
-                    if (expectedId != null) {
-                        matchedEntity = allEntities.find { ent ->
-                            ent.channelId.equals(expectedId, ignoreCase = true) ||
-                            ent.channelName.contains("${config.displayName} $ufToTry", ignoreCase = true) ||
-                            ent.channelId.contains("${config.displayName.lowercase()}_${ufToTry.lowercase()}", ignoreCase = true)
-                        }
-                        if (matchedEntity != null) break
-                    }
-                }
-            }
-
-            if (matchedEntity == null) {
-                // 1) Match por ID exato
-                matchedEntity = allEntities.find { it.channelId == config.exactId }
-                    // 2) Match por Nome exato
-                    ?: allEntities.find { it.channelName.equals(config.exactName, ignoreCase = true) }
-                    // 3) Match por palavra-chave
-                    ?: allEntities.find { ent ->
-                        config.keywords.any { kw ->
-                            val kwLower = kw.lowercase()
-                            ent.channelId.lowercase().contains(kwLower) || ent.channelName.lowercase().contains(kwLower)
-                        }
-                    }
-            }
-
-            if (matchedEntity != null) {
-                fixedEntities.add(matchedEntity.copy(
-                    number = targetNumber,
-                    channelName = config.displayName
-                ))
-                fixedChannelIds.add(matchedEntity.channelId)
-            }
+            fixedEntities.add(matched.copy(
+                number = targetNumber,
+                channelName = config.displayName
+            ))
+            fixedChannelIds.add(matched.channelId)
         }
 
         return Pair(fixedEntities, fixedChannelIds)
+    }
+
+    /**
+     * Ordem definitiva da grade (Etapa 10 §05, revisada na Etapa 13 §09), determinística:
+     *  Bloco 1: posições fixas 1-9 (preservadas exatamente como resolvidas).
+     *  Bloco 2: canais CITADOS em `novas regras.md` — bloco alfabético (se
+     *           [CatalogFilters.FEATURED_ALPHA_BLOCK] estiver ativo e não for fixo).
+     *  Bloco 3: demais canais representados pela Fonte A (Rei dos Canais) — [rdcIds].
+     *  Bloco 4: demais canais (iptv-org / internacionais / complementares).
+     *
+     * Nunca altera as posições 1-9, nunca duplica `channelId` (a entrada já é única)
+     * e não depende de ordenação alfabética global. Renumera o restante a partir de 10.
+     * A preservação dos canais do usuário (favoritos/último canal) é feita por
+     * rastreamento de `channelId` no repositório, nunca por número fixo.
+     */
+    fun orderGrade(
+        entities: List<ChannelNumberEntity>,
+        rdcIds: Set<String>
+    ): List<ChannelNumberEntity> {
+        val fixed = entities.filter { it.number in 1..9 }.sortedBy { it.number }
+        val rest = entities.filter { it.number !in 1..9 }
+
+        val featured = if (CatalogFilters.FEATURED_ALPHA_BLOCK) {
+            rest.filter { SourcePreferenceRegistry.isFeatured(it.channelId, it.channelName, it.country) }
+                .sortedWith(compareBy(
+                    { SourcePreferenceRegistry.familyOrderKey(it.channelName) },
+                    { SourcePreferenceRegistry.nameOrderKey(it.channelName) },
+                    { it.channelId }
+                ))
+        } else {
+            emptyList()
+        }
+        val featuredIds = featured.mapTo(HashSet()) { it.channelId }
+
+        val remainder = rest.filter { it.channelId !in featuredIds }
+
+        val rdc = remainder.filter { it.channelId in rdcIds }
+            .sortedWith(compareBy(
+                { categoryWeight(it.categories.split(',').map { c -> c.trim() }) },
+                { it.channelName.lowercase() },
+                { it.channelId }
+            ))
+        val others = remainder.filter { it.channelId !in rdcIds }
+            .sortedWith(compareBy(
+                { countryWeight(it.country) },
+                { categoryWeight(it.categories.split(',').map { c -> c.trim() }) },
+                { it.channelName.lowercase() },
+                { it.channelId }
+            ))
+
+        val out = ArrayList<ChannelNumberEntity>(entities.size)
+        out.addAll(fixed)
+        var number = 10
+        for (e in featured) { out.add(e.copy(number = number)); number++ }
+        for (e in rdc) { out.add(e.copy(number = number)); number++ }
+        for (e in others) { out.add(e.copy(number = number)); number++ }
+        return out.sortedBy { it.number }
+    }
+
+    /**
+     * Etapa 17 §02: navegação sequencial pela GRADE ATIVA COMPLETA (por número), e não
+     * por disponibilidade. Canais presentes na grade mas sem fonte reproduzível
+     * (registros de catálogo da Fonte A) PERMANECEM na sequência — nunca são pulados.
+     * Isso elimina o salto artificial (ex.: 9 -> 14) causado por ocultar canais
+     * indisponíveis. A ordem é sempre crescente por número e a busca envolve as pontas.
+     */
+    fun nextChannel(ordered: List<ChannelNumberEntity>, current: Int): ChannelNumberEntity? {
+        if (ordered.isEmpty()) return null
+        val list = ordered.sortedBy { it.number }
+        val idx = list.indexOfFirst { it.number == current }
+        return if (idx == -1) list.first() else list[(idx + 1) % list.size]
+    }
+
+    /** Ver [nextChannel]; retorna o canal anterior na grade, com envolução nas pontas. */
+    fun prevChannel(ordered: List<ChannelNumberEntity>, current: Int): ChannelNumberEntity? {
+        if (ordered.isEmpty()) return null
+        val list = ordered.sortedBy { it.number }
+        val idx = list.indexOfFirst { it.number == current }
+        return if (idx == -1) list.last() else list[(idx - 1 + list.size) % list.size]
     }
 }

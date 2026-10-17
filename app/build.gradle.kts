@@ -22,7 +22,17 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("C:/Users/SnyX/.android/debug.keystore")
+            // Caminho original (Windows). No Linux o Gradle não converte "C:/..." para File,
+            // o que quebra a configuração do projeto inteiro (inclusive tasks de debug/teste).
+            // Mantém o mesmo caminho/passwords no Windows e usa o keystore de debug padrão
+            // do Android fora do Windows. Alteração autorizada na Etapa 06.
+            val windowsKeystore = "C:/Users/SnyX/.android/debug.keystore"
+            val isWindows = System.getProperty("os.name").lowercase().contains("windows")
+            storeFile = if (isWindows) {
+                file(windowsKeystore)
+            } else {
+                file("${System.getProperty("user.home")}/.android/debug.keystore")
+            }
             storePassword = "android"
             keyAlias = "androiddebugkey"
             keyPassword = "android"
@@ -134,6 +144,9 @@ dependencies {
 
     // Debug
     debugImplementation("androidx.compose.ui:ui-tooling")
+
+    // Tests (unit - JVM)
+    testImplementation(libs.junit)
 }
 
 // ksp room schema disabled for now

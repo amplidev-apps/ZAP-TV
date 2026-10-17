@@ -18,6 +18,25 @@ object StreamHealthChecker {
             .build()
     }
 
+    // Cache curto de resultados (Etapa 07 §04): evita verificações repetitivas entre
+    // execuções próximas da sintonia. TTL curto para não fixar estado obsoleto.
+    private const val CACHE_TTL_MS = 60_000L
+    private val aliveCache = java.util.concurrent.ConcurrentHashMap<String, Pair<Long, Boolean>>()
+
+    private fun cacheGet(url: String): Boolean? {
+        val entry = aliveCache[url] ?: return null
+        if (System.currentTimeMillis() - entry.first > CACHE_TTL_MS) {
+            aliveCache.remove(url)
+            return null
+        }
+        return entry.second
+    }
+
+    private fun cachePut(url: String, alive: Boolean) {
+        if (aliveCache.size > 4096) aliveCache.clear()
+        aliveCache[url] = System.currentTimeMillis() to alive
+    }
+
     /**
      * Testa rapidamente uma URL de stream sem precisar de ApiStreamDto.
      * Usado durante o setup para verificar filiais regionais antes de confirmá-las.
@@ -48,6 +67,13 @@ object StreamHealthChecker {
     }
 
     suspend fun isStreamAlive(dto: ApiStreamDto): Boolean = withContext(Dispatchers.IO) {
+        cacheGet(dto.url)?.let { return@withContext it }
+        val alive = probeStream(dto)
+        cachePut(dto.url, alive)
+        alive
+    }
+
+    private suspend fun probeStream(dto: ApiStreamDto): Boolean = withContext(Dispatchers.IO) {
         try {
             // HEAD first
             val headReq = Request.Builder()

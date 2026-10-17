@@ -835,9 +835,9 @@ private fun TuningProgressStep(
             val checked = progress?.checked ?: 0
             val total = progress?.total ?: 1
             val alive = progress?.alive ?: 0
+            val added = progress?.added ?: 0
             val currentName = progress?.currentName ?: "Preparando..."
             val pct = if (total > 0) (checked.toFloat() / total.toFloat()) else 0f
-            val pctInt = (pct * 100).toInt()
 
             Text(
                 text = "Sintonizando: $currentName",
@@ -873,13 +873,13 @@ private fun TuningProgressStep(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Progresso: $pctInt%",
+                    text = "Verificando sinal: $alive/$total",
                     color = ZapTextSecondary,
                     fontFamily = MontserratFontFamily,
                     fontSize = 14.sp
                 )
                 Text(
-                    text = "Canais funcionais encontrados: $alive",
+                    text = "Canais adicionados: $added",
                     color = ZapGold,
                     fontFamily = MontserratFontFamily,
                     fontSize = 14.sp,
